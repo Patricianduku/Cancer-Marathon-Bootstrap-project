@@ -1,0 +1,660 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>KUTRRH Sponsorship Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            background-color: #28348c;
+        }
+        .navbar-brand, .nav-link {
+            color: white;
+        }
+        /* Ensure buttons wrap on smaller screens and fill their columns */
+        .row.text-center .col-md-4 .btn,
+        .row.text-center .col-md-6 .btn {
+            width: 100%; /* Make buttons full width in their columns */
+            margin-bottom: 10px; /* Add some space between buttons */
+        }
+
+        .package-options {
+            display: flex;
+            flex-wrap: wrap; /* Allow package buttons to wrap */
+            gap: 10px; /* Space between package buttons */
+            justify-content: center; /* Center package buttons */
+            margin-bottom: 20px; /* Space below package options */
+        }
+        .package-options .btn {
+            margin: 0; /* Reset individual button margin */
+            flex-grow: 1; /* Allow buttons to grow and fill space */
+            min-width: 120px; /* Minimum width for buttons */
+        }
+
+        .details-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #e9f6f2;
+            border-radius: 10px;
+        }
+
+        /* Combined container for all shirt visuals and size list */
+        .shirt-visuals-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Allow items to wrap to the next line on smaller screens */
+            margin-top: 20px;
+            align-items: flex-start;
+            justify-content: center; /* Center items if there's extra space */
+        }
+
+        /* Apply flex properties to all direct children of shirt-visuals-container */
+        .shirt-visuals-container > * {
+            flex: 1 1 calc(25% - 15px); /* Try to fit 4 items across, with 15px total gap per item */
+            min-width: 180px; /* Set a minimum width to prevent squishing on medium screens */
+            box-sizing: border-box;
+            max-width: 100%; /* Ensure they don't overflow parent */
+            height: auto; /* Maintain aspect ratio (for images) */
+        }
+
+        /* Specific styling for images */
+        .shirt-img, .chart-img {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        /* Specific styling for the list */
+        .shirt-visuals-container ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 0; /* Remove default ul margin-top */
+            border: none; /* Ensure no border on the list itself */
+            border-radius: 0; /* Ensure no border-radius on the list itself */
+        }
+        .shirt-visuals-container ul li {
+            padding: 5px 0;
+            border-bottom: 1px dashed #ddd; /* Subtle separator */
+        }
+        .shirt-visuals-container ul li:last-child {
+            border-bottom: none;
+        }
+
+        /* Styling for the 360 view button container */
+        .view-360-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+        }
+        .view-360-container .btn {
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .shirt-visuals-container > * { /* All children stack vertically on small screens */
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+            .shirt-visuals-container ul, .view-360-container {
+                margin-top: 20px; /* Add margin when list/button stacks below image/chart */
+            }
+        }
+
+        /* Styles for the shirt selection and continue button (now on top) */
+        .shirt-size-selection {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .shirt-size-selection label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .shirt-size-selection select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 5px;
+        }
+        .continue-btn-container {
+            margin-top: 20px;
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .continue-btn-container .btn {
+            padding: 10px 30px;
+            font-size: 1.1rem;
+        }
+        /* Style for the registration form section */
+        .registration-form-section {
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">🏥 KUTRRH Marathon</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Choose Your Registration Type</h2>
+    <div class="row text-center main-buttons">
+        <div class="col-md-4">
+            <button class="btn btn-primary" onclick="showDetails('individual')">Register as Individual</button>
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-success" onclick="showDetails('group')">Register as Group</button>
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-warning" onclick="showDetails('company')">Register as Company/Corporate</button>
+        </div>
+    </div>
+    <div class="row text-center mt-3 main-buttons">
+        <div class="col-md-6">
+            <button class="btn btn-info" onclick="showDetails('vendor')">Register as Vendor</button>
+        </div>
+        <div class="col-md-6">
+            <button class="btn btn-secondary" onclick="showDetails('exhibition')">Register for Exhibition</button>
+        </div>
+    </div>
+
+    <div id="individual" class="details-box">
+        <h4>👤 Individual Registration</h4>
+        <p>Register for races, choose your T-shirt size, and confirm your slot.</p>
+        
+        <div id="individualShirtSection">
+            <div class="shirt-size-selection">
+                <label for="individualShirtSize">Choose your T-shirt size:</label>
+                <select id="individualShirtSize" class="form-select">
+                    <option value="">Select size</option>
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                    <option value="XL">Extra Large (XL)</option>
+                </select>
+            </div>
+            <div class="continue-btn-container">
+                <button class="btn btn-primary" onclick="continueRegistration('individual')">Continue to Registration</button>
+            </div>
+        </div>
+
+        
+        <div class="shirt-visuals-container">
+            <img src="img/ee.png" alt="T-shirt Front" class="shirt-img">
+            <img src="img/bbb.png" alt="T-shirt Back" class="shirt-img">
+            <img src="img/tisho.jpg" alt="T-shirt Size Chart" class="chart-img">
+            <ul>
+                <li>Small (S): Chest 34-36 in</li>
+                <li>Medium (M): Chest 38-40 in</li>
+                <li>Large (L): Chest 42-44 in</li>
+                <li>Extra Large (XL): Chest 46-48 in</li>
+            </ul>
+            <div class="view-360-container">
+                <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#shirt360Modal">
+                    View 360° Image
+                </button>
+                <small class="text-muted text-center d-block mt-2">
+                    (Requires a dedicated 360 viewer)
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div id="group" class="details-box">
+        <h4>👥 Group Registration</h4>
+        <p>Add multiple participants under a team or organization, manage their entries and T-shirts.</p>
+        
+        <div id="groupShirtSection">
+            <div class="shirt-size-selection">
+                <label for="groupShirtSize">Choose your T-shirt size (for group lead):</label>
+                <select id="groupShirtSize" class="form-select">
+                    <option value="">Select size</option>
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                    <option value="XL">Extra Large (XL)</option>
+                </select>
+                <small class="form-text text-muted">Individual sizes for group members will be collected during the next step.</small>
+            </div>
+            <div class="continue-btn-container">
+                <button class="btn btn-success" onclick="continueRegistration('group')">Continue to Registration</button>
+            </div>
+        </div>
+
+        <div id="groupRegistrationForm" class="registration-form-section" style="display: none;">
+            <h5>Complete Group Lead's Details</h5>
+            <form id="formGroup">
+                <div class="mb-3">
+                    <label for="groupName" class="form-label">Group Lead Full Name:</label>
+                    <input type="text" class="form-control" id="groupName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="groupID" class="form-label">Group Lead ID Number:</label>
+                    <input type="text" class="form-control" id="groupID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="groupLocation" class="form-label">Group Location (City/Region):</label>
+                    <input type="text" class="form-control" id="groupLocation" required>
+                </div>
+                <button type="button" class="btn btn-success" onclick="submitFinalRegistration('group')">Submit Final Registration</button>
+                <button type="button" class="btn btn-secondary ms-2" onclick="cancelRegistration('group')">Cancel</button>
+            </form>
+        </div>
+
+        <div class="shirt-visuals-container">
+            <img src="img/bbb.png" alt="T-shirt Front" class="shirt-img">
+            <img src="img/ee.png" alt="T-shirt Back" class="shirt-img">
+            <img src="img/tisho.jpg" alt="T-shirt Size Chart" class="chart-img">
+            <ul>
+                <li>Small (S): Chest 34-36 in</li>
+                <li>Medium (M): Chest 38-40 in</li>
+                <li>Large (L): Chest 42-44 in</li>
+                <li>Extra Large (XL): Chest 46-48 in</li>
+            </ul>
+            <div class="view-360-container">
+                <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#shirt360Modal">
+                    View 360° Image
+                </button>
+                <small class="text-muted text-center d-block mt-2">
+                    (Requires a dedicated 360 viewer)
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div id="company" class="details-box">
+        <h4>🏢 Company Sponsorship Packages</h4>
+        <div class="package-options">
+            <button class="btn btn-outline-dark" onclick="showCompanyDetails('platinum')">Platinum Package</button>
+            <button class="btn btn-outline-dark" onclick="showCompanyDetails('gold')">Gold Package</button>
+            <button class="btn btn-outline-dark" onclick="showCompanyDetails('silver')">Silver Package</button>
+            <button class="btn btn-outline-dark" onclick="showCompanyDetails('bronze')">Bronze Package</button>
+        </div>
+        <div id="companyDetails" class="mt-3"></div>
+
+        <div id="companyShirtSection">
+            <div class="shirt-size-selection">
+                <label for="companyShirtSize">Choose T-shirt size (for contact person/representative):</label>
+                <select id="companyShirtSize" class="form-select">
+                    <option value="">Select size</option>
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                    <option value="XL">Extra Large (XL)</option>
+                </select>
+                <small class="form-text text-muted">Kits/T-shirt sizes for sponsored participants are included in your package and will be coordinated separately.</small>
+            </div>
+            <div class="continue-btn-container">
+                <button class="btn btn-warning" onclick="continueRegistration('company')">Continue to Registration</button>
+            </div>
+        </div>
+
+        <div id="companyRegistrationForm" class="registration-form-section" style="display: none;">
+            <h5>Complete Company Contact Details</h5>
+            <form id="formCompany">
+                <div class="mb-3">
+                    <label for="companyName" class="form-label">Contact Person Full Name:</label>
+                    <input type="text" class="form-control" id="companyName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="companyID" class="form-label">Contact Person ID Number:</label>
+                    <input type="text" class="form-control" id="companyID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="companyLocation" class="form-label">Company Location (Address/City):</label>
+                    <input type="text" class="form-control" id="companyLocation" required>
+                </div>
+                <button type="button" class="btn btn-success" onclick="submitFinalRegistration('company')">Submit Final Registration</button>
+                <button type="button" class="btn btn-secondary ms-2" onclick="cancelRegistration('company')">Cancel</button>
+            </form>
+        </div>
+
+        <div class="shirt-visuals-container">
+            <img src="img/ddd.png" alt="T-shirt Front" class="shirt-img">
+            <img src="img/ccc.png" alt="T-shirt Back" class="shirt-img">
+            <img src="img/tisho.jpg" alt="T-shirt Size Chart" class="chart-img">
+            <ul>
+                <li>Small (S): Chest 34-36 in</li>
+                <li>Medium (M): Chest 38-40 in</li>
+                <li>Large (L): Chest 42-44 in</li>
+                <li>Extra Large (XL): Chest 46-48 in</li>
+            </ul>
+            <div class="view-360-container">
+                <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#shirt360Modal">
+                    View 360° Image
+                </button>
+                <small class="text-muted text-center d-block mt-2">
+                    (Requires a dedicated 360 viewer)
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div id="vendor" class="details-box">
+        <h4>🛍️ Vendor Registration</h4>
+        <p>Vending Fee – 50,000</p>
+        
+        <div id="vendorShirtSection">
+            <div class="shirt-size-selection">
+                <label for="vendorShirtSize">Choose T-shirt size (for vendor representative):</label>
+                <select id="vendorShirtSize" class="form-select">
+                    <option value="">Select size</option>
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                    <option value="XL">Extra Large (XL)</option>
+                </select>
+            </div>
+            <div class="continue-btn-container">
+                <button class="btn btn-info" onclick="continueRegistration('vendor')">Continue to Registration</button>
+            </div>
+        </div>
+
+        <div id="vendorRegistrationForm" class="registration-form-section" style="display: none;">
+            <h5>Complete Vendor Representative Details</h5>
+            <form id="formVendor">
+                <div class="mb-3">
+                    <label for="vendorName" class="form-label">Representative Full Name:</label>
+                    <input type="text" class="form-control" id="vendorName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="vendorID" class="form-label">Representative ID Number:</label>
+                    <input type="text" class="form-control" id="vendorID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="vendorPieces" class="form-label">Number of Vending Pieces/Units:</label>
+                    <input type="number" class="form-control" id="vendorPieces" min="1" required>
+                </div>
+                <button type="button" class="btn btn-success" onclick="submitFinalRegistration('vendor')">Submit Final Registration</button>
+                <button type="button" class="btn btn-secondary ms-2" onclick="cancelRegistration('vendor')">Cancel</button>
+            </form>
+        </div>
+
+        <div class="shirt-visuals-container">
+            <img src="img/ggg.png" alt="T-shirt Front" class="shirt-img">
+            <img src="img/fff.png" alt="T-shirt Back" class="shirt-img">
+            <img src="img/tisho.jpg" alt="T-shirt Size Chart" class="chart-img">
+            <ul>
+                <li>Small (S): Chest 34-36 in</li>
+                <li>Medium (M): Chest 38-40 in</li>
+                <li>Large (L): Chest 42-44 in</li>
+                <li>Extra Large (XL): Chest 46-48 in</li>
+            </ul>
+            <div class="view-360-container">
+                <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#shirt360Modal">
+                    View 360° Image
+                </button>
+                <small class="text-muted text-center d-block mt-2">
+                    (Requires a dedicated 360 viewer)
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <div id="exhibition" class="details-box">
+        <h4>🎪 Exhibition Registration</h4>
+        <p>Exhibition Fee – 100,000</p>
+        
+        <div id="exhibitionShirtSection">
+            <div class="shirt-size-selection">
+                <label for="exhibitionShirtSize">Choose T-shirt size (for exhibition representative):</label>
+                <select id="exhibitionShirtSize" class="form-select">
+                    <option value="">Select size</option>
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                    <option value="XL">Extra Large (XL)</option>
+                </select>
+            </div>
+            <div class="continue-btn-container">
+                <button class="btn btn-secondary" onclick="continueRegistration('exhibition')">Continue to Registration</button>
+            </div>
+        </div>
+
+        <div id="exhibitionRegistrationForm" class="registration-form-section" style="display: none;">
+            <h5>Complete Exhibition Representative Details</h5>
+            <form id="formExhibition">
+                <div class="mb-3">
+                    <label for="exhibitionName" class="form-label">Representative Full Name:</label>
+                    <input type="text" class="form-control" id="exhibitionName" required>
+                </div>
+                <div class="mb-3">
+                    <label for="exhibitionID" class="form-label">Representative ID Number:</label>
+                    <input type="text" class="form-control" id="exhibitionID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="exhibitionPieces" class="form-label">Number of Exhibition Pieces/Stands:</label>
+                    <input type="number" class="form-control" id="exhibitionPieces" min="1" required>
+                </div>
+                <button type="button" class="btn btn-success" onclick="submitFinalRegistration('exhibition')">Submit Final Registration</button>
+                <button type="button" class="btn btn-secondary ms-2" onclick="cancelRegistration('exhibition')">Cancel</button>
+            </form>
+        </div>
+
+        <div class="shirt-visuals-container">
+            <img src="img/ggg.png" alt="T-shirt Front" class="shirt-img">
+            <img src="img/fff.png" alt="T-shirt Back" class="shirt-img">
+            <img src="img/tisho.jpg" alt="T-shirt Size Chart" class="chart-img">
+            <ul>
+                <li>Small (S): Chest 34-36 in</li>
+                <li>Medium (M): Chest 38-40 in</li>
+                <li>Large (L): Chest 42-44 in</li>
+                <li>Extra Large (XL): Chest 46-48 in</li>
+            </ul>
+            <div class="view-360-container">
+                <button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#shirt360Modal">
+                    View 360° Image
+                </button>
+                <small class="text-muted text-center d-block mt-2">
+                    (Requires a dedicated 360 viewer)
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="shirt360Modal" tabindex="-1" aria-labelledby="shirt360ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="shirt360ModalLabel">360° View of T-shirt</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p>This area would display the interactive 360° image viewer for the T-shirt.</p>
+        <img src="img/ee.png" alt="T-shirt Front Placeholder" class="img-fluid border p-3 rounded" style="max-height: 400px; object-fit: contain;">
+        <p class="text-muted mt-3">
+            (For actual interactive 360° functionality, you would integrate a specialized JavaScript 360 viewer library,
+            which would typically use a set of images or a panoramic image.)
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showDetails(type) {
+        const sections = document.querySelectorAll('.details-box');
+        sections.forEach(s => s.style.display = 'none'); // Hide all sections
+        const selectedSection = document.getElementById(type);
+        selectedSection.style.display = 'block'; // Show the selected section
+
+        // Ensure shirt selection is visible and form is hidden when a new category is chosen
+        resetRegistrationForm(type);
+
+        // Scroll to the selected section
+        selectedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showCompanyDetails(package) {
+        const companyDetails = {
+            platinum: `
+                <h5>PLATINUM – 2,000,000 KES</h5>
+                <ul>
+                    <li>Exhibition booth with two people manning</li>
+                    <li>20 running kits</li>
+                    <li>VIP access</li>
+                    <li>Co-sponsoring of the opening reception</li>
+                    <li>Large logo in promotional materials (web, promos, social media, merchandise)</li>
+                    <li>Speaking opportunity</li>
+                    <li>Branded signage on prominent venue locations (sponsor-provided)</li>
+                    <li>Company description in the marathon’s program</li>
+                </ul>`,
+            gold: `
+                <h5>GOLD – 1,000,000 KES</h5>
+                <ul>
+                    <li>Exhibition booth with two people manning</li>
+                    <li>10 running kits</li>
+                    <li>VIP access</li>
+                    <li>Medium logo in promotional materials (web, promos, social media, merchandise)</li>
+                    <li>Speaking opportunity</li>
+                    <li>Branded signage on prominent venue locations (sponsor-provided)</li>
+                    <li>Company description in the marathon’s program</li>
+                </ul>`,
+            silver: `
+                <h5>SILVER – 500,000 KES</h5>
+                <ul>
+                    <li>Exhibition booth with two people manning</li>
+                    <li>5 running kits</li>
+                    <li>Logo in promotional materials (web, promos, social media)</li>
+                    <li>Branded signage on prominent venue locations (sponsor-provided)</li>
+                    <li>Company description in the marathon’s program</li>
+                </ul>`,
+            bronze: `
+                <h5>BRONZE – 250,000 KES</h5>
+                <ul>
+                    <li>3 running kits</li>
+                    <li>Logo in promotional materials (web, promos, social media)</li>
+                    <li>Branded signage on prominent venue locations (sponsor-provided)</li>
+                    <li>Company description in the marathon’s program</li>
+                </ul>`
+        };
+        document.getElementById('companyDetails').innerHTML = companyDetails[package];
+    }
+
+    // Function to handle moving from shirt selection to personal details form
+    function continueRegistration(type) {
+        let shirtSize = document.getElementById(type + 'ShirtSize').value;
+        
+        if (!shirtSize) {
+            alert("Please select a T-shirt size before continuing.");
+            return;
+        }
+
+        // Hide shirt selection, show registration form
+        document.getElementById(type + 'ShirtSection').style.display = 'none';
+        document.getElementById(type + 'RegistrationForm').style.display = 'block';
+
+        // Scroll to the new form section
+        document.getElementById(type + 'RegistrationForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Function for final submission of registration details
+    function submitFinalRegistration(type) {
+        const name = document.getElementById(type + 'Name').value;
+        const idNo = document.getElementById(type + 'ID').value;
+        const shirtSize = document.getElementById(type + 'ShirtSize').value;
+
+        let dynamicFieldLabel = '';
+        let dynamicFieldValue = '';
+
+        if (['individual', 'group', 'company'].includes(type)) {
+            dynamicFieldLabel = 'Location';
+            dynamicFieldValue = document.getElementById(type + 'Location').value;
+        } else if (['vendor', 'exhibition'].includes(type)) {
+            dynamicFieldLabel = 'Pieces';
+            dynamicFieldValue = document.getElementById(type + 'Pieces').value;
+            // Basic validation for pieces
+            if (isNaN(dynamicFieldValue) || parseInt(dynamicFieldValue) < 1) {
+                alert("Please enter a valid number for Pieces (must be 1 or more).");
+                return;
+            }
+        }
+
+        if (!name || !idNo || !dynamicFieldValue) {
+            alert(`Please fill in your Full Name, ID Number, and ${dynamicFieldLabel}.`);
+            return;
+        }
+
+        let confirmationMessage = `Registration Details for ${type.charAt(0).toUpperCase() + type.slice(1)}:\n`;
+        confirmationMessage += `Name: ${name}\n`;
+        confirmationMessage += `ID Number: ${idNo}\n`;
+        confirmationMessage += `T-shirt Size: ${shirtSize}\n`;
+        confirmationMessage += `${dynamicFieldLabel}: ${dynamicFieldValue}\n\n`;
+        confirmationMessage += `Thank you for registering! (This data would typically be sent to a server.)`;
+
+        alert(confirmationMessage);
+
+        // Reset the form and show the shirt selection again
+        resetRegistrationForm(type);
+    }
+
+    // Function to reset the form or cancel registration
+    function cancelRegistration(type) {
+        resetRegistrationForm(type);
+        alert("Registration cancelled for this section.");
+    }
+
+    // Helper function to reset the state of a registration section
+    function resetRegistrationForm(type) {
+        const shirtSection = document.getElementById(type + 'ShirtSection');
+        const registrationForm = document.getElementById(type + 'RegistrationForm');
+        const shirtSizeSelect = document.getElementById(type + 'ShirtSize');
+        const nameInput = document.getElementById(type + 'Name');
+        const idInput = document.getElementById(type + 'ID');
+        
+        // Reset dynamic field based on type
+        let dynamicField;
+        if (['individual', 'group', 'company'].includes(type)) {
+            dynamicField = document.getElementById(type + 'Location');
+        } else if (['vendor', 'exhibition'].includes(type)) {
+            dynamicField = document.getElementById(type + 'Pieces');
+        }
+
+        // Show shirt selection, hide registration form
+        shirtSection.style.display = 'block';
+        registrationForm.style.display = 'none';
+
+        // Clear form fields
+        if (shirtSizeSelect) shirtSizeSelect.value = '';
+        if (nameInput) nameInput.value = '';
+        if (idInput) idInput.value = '';
+        if (dynamicField) dynamicField.value = '';
+    }
+
+    // Function for the 360 view button (modal trigger)
+    // No specific JS needed here as Bootstrap handles it via data-attributes
+</script>
+</body>
+</html>
+```
